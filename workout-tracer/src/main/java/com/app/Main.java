@@ -1,25 +1,16 @@
 package com.app;
 
-import javafx.application.Application;
-import javafx.scene.Scene;
-import javafx.scene.control.Label;
-import javafx.scene.layout.StackPane;
-import javafx.stage.Stage;
+import com.app.model.Strength;
+import com.app.model.Cardio;
 
-public class Main extends Application {
-
-    @Override
-    public void start(Stage primaryStage) {
-        Label label = new Label("Fitness Tracker Başladı!");
-        StackPane root = new StackPane(label);
-        Scene scene = new Scene(root, 400, 300);
-
-        primaryStage.setTitle("Personal Workout Tracker");
-        primaryStage.setScene(scene);
-        primaryStage.show();
-    }
-
+public class Main {
     public static void main(String[] args) {
-        launch(args);
+        // Strength sınıfını test edelim
+        Strength s = new Strength("Bench Press", 45, 80);
+        System.out.println(s.getName() + " yakılan kalori: " + s.calculateCalories());
+
+        // Cardio sınıfını test edelim
+        Cardio c = new Cardio("Kosu", 30, 5.0);
+        System.out.println(c.getName() + " yakılan kalori: " + c.calculateCalories());
     }
 }

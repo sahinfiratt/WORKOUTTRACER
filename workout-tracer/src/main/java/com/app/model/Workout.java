@@ -2,17 +2,21 @@ package com.app.model;
 
 public abstract class Workout {
     private String name;
-    private int duration; // dakika cinsinden
+    private int duration;
 
     public Workout(String name, int duration) {
         this.name = name;
         this.duration = duration;
     }
 
-    // Abstract method: Her alt sınıf kendi kalori yakımını hesaplayacak
     public abstract double calculateCalories();
 
-    // Getter ve Setter'lar
-    public String getName() { return name; }
-    public int getDuration() { return duration; }
+    // BURAYI KONTROL ET: 'public' olduğundan emin ol!
+    public int getDuration() { 
+        return duration; 
+    }
+
+    public String getName() { 
+        return name; 
+    }
 }
