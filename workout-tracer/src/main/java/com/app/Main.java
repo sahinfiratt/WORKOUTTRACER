@@ -10,6 +10,9 @@ import javafx.scene.control.Label;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
+import javafx.scene.control.TableColumn;
+import javafx.scene.control.TableView;
+import javafx.scene.control.cell.PropertyValueFactory;
 
 public class Main extends Application {
 
@@ -50,9 +53,14 @@ public class Main extends Application {
         Label gecmisBaslik = new Label("Antrenman Geçmişi");
         gecmisBaslik.setStyle("-fx-font-size: 16px; -fx-font-weight: bold; -fx-padding: 10 0 0 0;");
         
-        javafx.scene.control.ListView<String> historyList = new javafx.scene.control.ListView<>();
-        // Uygulama ilk açıldığında veritabanındaki mevcut verileri listeye yükle
-        historyList.getItems().addAll(DatabaseHelper.getWorkoutHistory());
+        TableView<WorkoutRecord> historyTable = new TableView<>();
+        TableColumn<WorkoutRecord, String> nameColumn = new TableColumn<>("Antrenman");
+        nameColumn.setCellValueFactory(new PropertyValueFactory<>("name"));
+        TableColumn<WorkoutRecord, Double> caloriesColumn = new TableColumn<>("Kalori");
+        caloriesColumn.setCellValueFactory(new PropertyValueFactory<>("calories"));
+        historyTable.getColumns().addAll(nameColumn, caloriesColumn);
+        // Uygulama ilk açıldığında veritabanındaki mevcut verileri tabloya yükle
+        historyTable.getItems().addAll(DatabaseHelper.getWorkoutHistory());
         // ------------------------------------------
 
         saveButton.setOnAction(e -> {
@@ -66,8 +74,8 @@ public class Main extends Application {
                 caloriInput.clear();
                 
                 // Kayıt başarılı olunca listeyi temizle ve veritabanından en güncel halini tekrar çek
-                historyList.getItems().clear();
-                historyList.getItems().addAll(DatabaseHelper.getWorkoutHistory());
+                historyTable.getItems().clear();
+                historyTable.getItems().addAll(DatabaseHelper.getWorkoutHistory());
                 
             } catch (NumberFormatException ex) {
                 mesajLabel.setText("Hata: Lütfen kalori kısmına sayı girin!");
@@ -76,14 +84,30 @@ public class Main extends Application {
         });
 
         // Tüm elemanları (liste dahil) ekrana ekle
-        content.getChildren().addAll(baslik, nameInput, caloriInput, saveButton, mesajLabel, gecmisBaslik, historyList);
-        // Örnek bir veriyi veritabanına ekle ve ekrana yaz
-        Strength s = new Strength("Bench Press", 45, 80);
-        DatabaseHelper.addWorkout(s.getName(), s.calculateCalories());
-        
-        Label statusLabel = new Label("Hoş geldin! Antrenman: " + s.getName());
-        content.getChildren().add(statusLabel);
-        
+       // --- YENİ EKLENEN KISIM: Silme Butonu ---
+        Button deleteButton = new Button("Seçileni Sil");
+        deleteButton.setStyle("-fx-background-color: #dc3545; -fx-text-fill: white; -fx-font-weight: bold;");
+
+        deleteButton.setOnAction(e -> {
+            WorkoutRecord selectedItem = historyTable.getSelectionModel().getSelectedItem();
+            if (selectedItem != null) {
+                DatabaseHelper.deleteWorkout(selectedItem.getName());
+
+                mesajLabel.setText("Kayıt silindi!");
+                mesajLabel.setStyle("-fx-text-fill: orange;");
+                
+                // Listeyi yenile
+                historyTable.getItems().clear();
+                historyTable.getItems().addAll(DatabaseHelper.getWorkoutHistory());
+            } else {
+                mesajLabel.setText("Lütfen silmek için listeden bir kayıt seçin.");
+                mesajLabel.setStyle("-fx-text-fill: red;");
+            }
+        });
+
+        // Tüm elemanları (sil butonu dahil) ekrana ekle
+        content.getChildren().addAll(baslik, nameInput, caloriInput, saveButton, mesajLabel, gecmisBaslik, historyTable, deleteButton); // Örnek bir veriyi veritabanına ekle ve ekrana yaz
+       
         root.setLeft(sidebar);
         root.setCenter(content);
 

@@ -50,9 +50,8 @@ public class DatabaseHelper {
             System.out.println("Ekleme hatası: " + e.getMessage());
         }
     }
-    public static List<String> getWorkoutHistory() {
-        List<String> history = new ArrayList<>();
-        // En son eklenen en üstte görünsün diye ORDER BY id DESC kullanıyoruz
+    public static List<WorkoutRecord> getWorkoutHistory() {
+        List<WorkoutRecord> history = new ArrayList<>();
         String sql = "SELECT * FROM workouts ORDER BY id DESC";
         
         try (Connection conn = DriverManager.getConnection(URL);
@@ -60,12 +59,23 @@ public class DatabaseHelper {
              ResultSet rs = stmt.executeQuery(sql)) {
             
             while (rs.next()) {
-                String record = rs.getString("name") + " | " + rs.getDouble("calories") + " kcal";
-                history.add(record);
+                history.add(new WorkoutRecord(rs.getString("name"), rs.getDouble("calories")));
             }
         } catch (Exception e) {
             System.out.println("Veri çekme hatası: " + e.getMessage());
         }
         return history;
+    }
+    public static void deleteWorkout(String name) {
+        String sql = "DELETE FROM workouts WHERE name = ?";
+        
+        try (Connection conn = DriverManager.getConnection(URL);
+             var pstmt = conn.prepareStatement(sql)) {
+            pstmt.setString(1, name);
+            pstmt.executeUpdate();
+            System.out.println("Kayıt silindi: " + name);
+        } catch (Exception e) {
+            System.out.println("Silme hatası: " + e.getMessage());
+        }
     }
 }
