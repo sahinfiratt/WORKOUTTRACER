@@ -1,0 +1,10 @@
+/* resources/style.css */
+.root {
+    -fx-font-family: "Segoe UI";
+    -fx-background-color: #ffffff;
+}
+.button {
+    -fx-background-color: #28a745;
+    -fx-text-fill: white;
+    -fx-font-weight: bold;
+}
