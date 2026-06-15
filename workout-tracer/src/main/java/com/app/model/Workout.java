@@ -9,14 +9,14 @@ public abstract class Workout {
         this.duration = duration;
     }
 
+    public String getName() {
+        return name;
+    }
+
+    public int getDuration() {
+        return duration;
+    }
+
+    // Alt sınıflar (Strength, Cardio) bu metodu kendi formüllerine göre dolduracak
     public abstract double calculateCalories();
-
-    // BURAYI KONTROL ET: 'public' olduğundan emin ol!
-    public int getDuration() { 
-        return duration; 
-    }
-
-    public String getName() { 
-        return name; 
-    }
 }

@@ -1,4 +1,5 @@
+com\app\Launcher.class
 com\app\model\Cardio.class
+com\app\DatabaseHelper.class
 com\app\model\Workout.class
-com\app\Main.class
-com\app\model\Strength.class
+com\app\WorkoutRecord.class
